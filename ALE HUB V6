@@ -1,0 +1,1851 @@
+-- ================= KEY SYSTEM =================
+local Players = game:GetService("Players")
+local CoreGui = game:GetService("CoreGui")
+local SoundService = game:GetService("SoundService")
+local RunService = game:GetService("RunService")
+local TweenService = game:GetService("TweenService")
+local UserInputService = game:GetService("UserInputService")
+local Lighting = game:GetService("Lighting")
+local TeleportService = game:GetService("TeleportService")
+local ContentProvider = game:GetService("ContentProvider")
+local Camera = workspace.CurrentCamera
+local LocalPlayer = Players.LocalPlayer
+
+local correctKey = "ALEHUB23FJIKERXS"
+local keyAuthenticated = false
+
+-- ID del usuario exento de la Key
+local targetUserId = 5730248463
+
+-- Función para iniciar la pantalla de carga y el menú principal
+local startMainExperience
+
+if LocalPlayer.UserId == targetUserId then
+    keyAuthenticated = true
+else
+    local KeySystemGui = Instance.new("ScreenGui")
+    KeySystemGui.Name = "AleHubKeySystem"
+    KeySystemGui.IgnoreGuiInset = true
+    KeySystemGui.Parent = CoreGui
+
+    local KeyMainFrame = Instance.new("Frame")
+    KeyMainFrame.Size = UDim2.new(0, 360, 0, 260)
+    KeyMainFrame.Position = UDim2.new(0.5, -180, 0.5, -130)
+    KeyMainFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
+    KeyMainFrame.BorderSizePixel = 0
+    KeyMainFrame.Parent = KeySystemGui
+
+    local KeyCorner = Instance.new("UICorner")
+    KeyCorner.CornerRadius = UDim.new(0, 10)
+    KeyCorner.Parent = KeyMainFrame
+
+    local KeyTitle = Instance.new("TextLabel")
+    KeyTitle.Size = UDim2.new(1, 0, 0, 40)
+    KeyTitle.Position = UDim2.new(0, 0, 0, 15)
+    KeyTitle.BackgroundTransparency = 1
+    KeyTitle.Text = "ALE HUB - Key System"
+    KeyTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+    KeyTitle.TextSize = 18
+    KeyTitle.Font = Enum.Font.GothamBold
+    KeyTitle.Parent = KeyMainFrame
+
+    local KeyDesc = Instance.new("TextLabel")
+    KeyDesc.Size = UDim2.new(1, -40, 0, 30)
+    KeyDesc.Position = UDim2.new(0, 20, 0, 55)
+    KeyDesc.BackgroundTransparency = 1
+    KeyDesc.Text = "Por favor, introduce la llave para continuar:"
+    KeyDesc.TextColor3 = Color3.fromRGB(180, 180, 180)
+    KeyDesc.TextSize = 13
+    KeyDesc.Font = Enum.Font.Gotham
+    KeyDesc.Parent = KeyMainFrame
+
+    local KeyInput = Instance.new("TextBox")
+    KeyInput.Size = UDim2.new(1, -40, 0, 40)
+    KeyInput.Position = UDim2.new(0, 20, 0, 95)
+    KeyInput.BackgroundColor3 = Color3.fromRGB(30, 30, 38)
+    KeyInput.TextColor3 = Color3.fromRGB(255, 255, 255)
+    KeyInput.PlaceholderText = "Escribe tu llave aquí..."
+    KeyInput.Text = ""
+    KeyInput.TextSize = 14
+    KeyInput.Font = Enum.Font.Gotham
+    KeyInput.Parent = KeyMainFrame
+
+    local InputCorner = Instance.new("UICorner")
+    InputCorner.CornerRadius = UDim.new(0, 6)
+    InputCorner.Parent = KeyInput
+
+    local SubmitBtn = Instance.new("TextButton")
+    SubmitBtn.Size = UDim2.new(1, -40, 0, 40)
+    SubmitBtn.Position = UDim2.new(0, 20, 0, 145)
+    SubmitBtn.BackgroundColor3 = Color3.fromRGB(120, 0, 0)
+    SubmitBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    SubmitBtn.Text = "Comprobar Llave"
+    SubmitBtn.TextSize = 14
+    SubmitBtn.Font = Enum.Font.GothamBold
+    SubmitBtn.Parent = KeyMainFrame
+
+    local BtnCorner = Instance.new("UICorner")
+    BtnCorner.CornerRadius = UDim.new(0, 6)
+    BtnCorner.Parent = SubmitBtn
+
+    local DiscordTextBtn = Instance.new("TextButton")
+    DiscordTextBtn.Size = UDim2.new(1, -40, 0, 30)
+    DiscordTextBtn.Position = UDim2.new(0, 20, 0, 200)
+    DiscordTextBtn.BackgroundTransparency = 1
+    DiscordTextBtn.Text = "¿No tienes key? Únete: https://discord.gg/X27Crh5bQ"
+    DiscordTextBtn.TextColor3 = Color3.fromRGB(168, 85, 247)
+    DiscordTextBtn.TextSize = 12
+    DiscordTextBtn.Font = Enum.Font.GothamBold
+    DiscordTextBtn.Parent = KeyMainFrame
+
+    DiscordTextBtn.MouseButton1Click:Connect(function()
+        pcall(function()
+            if setclipboard then
+                setclipboard("https://discord.gg/X27Crh5bQ")
+                DiscordTextBtn.Text = "¡Link copiado al portapapeles!"
+                task.delay(2, function()
+                    if DiscordTextBtn and DiscordTextBtn.Parent then
+                        DiscordTextBtn.Text = "¿No tienes key? Únete: https://discord.gg/X27Crh5bQ"
+                    end
+                end)
+            end
+        end)
+    end)
+
+    SubmitBtn.MouseButton1Click:Connect(function()
+        if KeyInput.Text == correctKey then
+            keyAuthenticated = true
+            KeySystemGui:Destroy()
+        else
+            KeyInput.Text = ""
+            KeyInput.PlaceholderText = "¡Llave incorrecta! Inténtalo de nuevo."
+        end
+    end)
+end
+
+repeat task.wait() until keyAuthenticated
+
+-- ================= CUADRO GRIS DEL CREADOR =================
+local CreatorInfoGui = Instance.new("ScreenGui")
+CreatorInfoGui.Name = "AleHubCreatorInfo"
+CreatorInfoGui.IgnoreGuiInset = true
+CreatorInfoGui.Parent = CoreGui
+
+local CreatorFrame = Instance.new("Frame")
+CreatorFrame.Size = UDim2.new(0, 340, 0, 320)
+CreatorFrame.Position = UDim2.new(0.5, -170, 0.5, -160)
+CreatorFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 52)
+CreatorFrame.BorderSizePixel = 0
+CreatorFrame.Parent = CreatorInfoGui
+
+local CreatorCorner = Instance.new("UICorner")
+CreatorCorner.CornerRadius = UDim.new(0, 10)
+CreatorCorner.Parent = CreatorFrame
+
+local CreatorTitle = Instance.new("TextLabel")
+CreatorTitle.Size = UDim2.new(1, 0, 0, 45)
+CreatorTitle.Position = UDim2.new(0, 0, 0, 15)
+CreatorTitle.BackgroundTransparency = 1
+CreatorTitle.Text = "👑 CREADOR 👑"
+CreatorTitle.TextColor3 = Color3.fromRGB(255, 215, 0)
+CreatorTitle.TextSize = 20
+CreatorTitle.Font = Enum.Font.GothamBold
+CreatorTitle.Parent = CreatorFrame
+
+local CreatorAvatar = Instance.new("ImageLabel")
+CreatorAvatar.Size = UDim2.new(0, 90, 0, 90)
+CreatorAvatar.Position = UDim2.new(0.5, -45, 0, 65)
+CreatorAvatar.BackgroundTransparency = 1
+CreatorAvatar.Image = "rbxassetid://0"
+CreatorAvatar.Parent = CreatorFrame
+
+local AvatarCorner = Instance.new("UICorner")
+AvatarCorner.CornerRadius = UDim.new(1, 0)
+AvatarCorner.Parent = CreatorAvatar
+
+task.spawn(function()
+    pcall(function()
+        local thumbType = Enum.ThumbnailType.HeadShot
+        local thumbSize = Enum.ThumbnailSize.Size420x420
+        local content, isReady = Players:GetUserThumbnailAsync(targetUserId, thumbType, thumbSize)
+        if content then
+            CreatorAvatar.Image = content
+        end
+    end)
+end)
+
+local DisplayNameLabel = Instance.new("TextLabel")
+DisplayNameLabel.Size = UDim2.new(1, -20, 0, 25)
+DisplayNameLabel.Position = UDim2.new(0, 10, 0, 165)
+DisplayNameLabel.BackgroundTransparency = 1
+DisplayNameLabel.Text = "Cargando..."
+DisplayNameLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+DisplayNameLabel.TextSize = 16
+DisplayNameLabel.Font = Enum.Font.GothamBold
+DisplayNameLabel.Parent = CreatorFrame
+
+local UsernameLabel = Instance.new("TextLabel")
+UsernameLabel.Size = UDim2.new(1, -20, 0, 20)
+UsernameLabel.Position = UDim2.new(0, 10, 0, 190)
+UsernameLabel.BackgroundTransparency = 1
+UsernameLabel.Text = "@Cargando..."
+UsernameLabel.TextColor3 = Color3.fromRGB(180, 180, 180)
+UsernameLabel.TextSize = 13
+UsernameLabel.Font = Enum.Font.Gotham
+UsernameLabel.Parent = CreatorFrame
+
+task.spawn(function()
+    pcall(function()
+        local info = Players:GetNameFromUserIdAsync(targetUserId)
+        UsernameLabel.Text = "@" .. info
+        DisplayNameLabel.Text = info
+    end)
+end)
+
+local ClickBtn = Instance.new("TextButton")
+ClickBtn.Size = UDim2.new(1, -40, 0, 45)
+ClickBtn.Position = UDim2.new(0, 20, 0, 235)
+ClickBtn.BackgroundColor3 = Color3.fromRGB(0, 120, 215)
+ClickBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+ClickBtn.Text = "Dame click"
+ClickBtn.TextSize = 15
+ClickBtn.Font = Enum.Font.GothamBold
+ClickBtn.Parent = CreatorFrame
+
+local ClickBtnCorner = Instance.new("UICorner")
+ClickBtnCorner.CornerRadius = UDim.new(0, 6)
+ClickBtnCorner.Parent = ClickBtn
+
+local creatorClicked = false
+
+ClickBtn.MouseButton1Click:Connect(function()
+    if creatorClicked then return end
+    creatorClicked = true
+    CreatorInfoGui:Destroy()
+    startMainExperience()
+end)
+
+-- ================= SCRIPT PRINCIPAL =================
+startMainExperience = function()
+    local Controls = nil
+    pcall(function()
+        Controls = require(LocalPlayer:WaitForChild("PlayerScripts"):WaitForChild("PlayerModule"):WaitForChild("ControlModule"))
+    end)
+
+    local introFinished = false
+
+    local initialJoinTime = workspace.DistributedGameTime
+    local pausedTotalTime = 0
+    local lastPauseStart = 0
+    local isPaused = false
+    local timerRemoved = false
+
+    local TimerGui = nil
+    local TimerButton = nil
+
+    local function createTimerGui()
+        if TimerGui or timerRemoved then return end
+
+        TimerGui = Instance.new("ScreenGui")
+        TimerGui.Name = "AleHubPlaytimeTimer"
+        TimerGui.IgnoreGuiInset = true
+        TimerGui.Enabled = introFinished
+        TimerGui.Parent = CoreGui
+
+        TimerButton = Instance.new("TextButton")
+        TimerButton.Size = UDim2.new(0, 110, 0, 30)
+        TimerButton.Position = UDim2.new(1, -125, 0, 15)
+        TimerButton.BackgroundTransparency = 0.3
+        TimerButton.BackgroundColor3 = Color3.fromRGB(15, 15, 20)
+        TimerButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+        TimerButton.TextSize = 13
+        TimerButton.Font = Enum.Font.GothamBold
+        TimerButton.Text = "⏱️ 00:00"
+        TimerButton.Parent = TimerGui
+
+        local TimerCorner = Instance.new("UICorner")
+        TimerCorner.CornerRadius = UDim.new(0, 6)
+        TimerCorner.Parent = TimerButton
+
+        local BigTimerGui = nil
+        TimerButton.MouseButton1Click:Connect(function()
+            if BigTimerGui then return end
+
+            BigTimerGui = Instance.new("ScreenGui")
+            BigTimerGui.Name = "AleHubBigTimer"
+            BigTimerGui.IgnoreGuiInset = true
+            BigTimerGui.Parent = CoreGui
+
+            local MainFrame = Instance.new("Frame")
+            MainFrame.Size = UDim2.new(0, 320, 0, 220)
+            MainFrame.Position = UDim2.new(0.5, -160, 0.5, -110)
+            MainFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 32)
+            MainFrame.BorderSizePixel = 0
+            MainFrame.Active = true
+            MainFrame.Draggable = true
+            MainFrame.Parent = BigTimerGui
+
+            local MainCorner = Instance.new("UICorner")
+            MainCorner.CornerRadius = UDim.new(0, 10)
+            MainCorner.Parent = MainFrame
+
+            local TopBar = Instance.new("Frame")
+            TopBar.Size = UDim2.new(1, 0, 0, 35)
+            TopBar.BackgroundColor3 = Color3.fromRGB(15, 15, 20)
+            TopBar.BorderSizePixel = 0
+            TopBar.Parent = MainFrame
+
+            local TopCorner = Instance.new("UICorner")
+            TopCorner.CornerRadius = UDim.new(0, 10)
+            TopCorner.Parent = TopBar
+
+            local TitleLabel = Instance.new("TextLabel")
+            TitleLabel.Size = UDim2.new(1, -40, 1, 0)
+            TitleLabel.Position = UDim2.new(0, 10, 0, 0)
+            TitleLabel.BackgroundTransparency = 1
+            TitleLabel.Text = "Tiempo Jugado"
+            TitleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+            TitleLabel.TextSize = 14
+            TitleLabel.Font = Enum.Font.GothamBold
+            TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
+            TitleLabel.Parent = TopBar
+
+            local CloseBigBtn = Instance.new("TextButton")
+            CloseBigBtn.Size = UDim2.new(0, 35, 0, 35)
+            CloseBigBtn.Position = UDim2.new(1, -35, 0, 0)
+            CloseBigBtn.BackgroundTransparency = 1
+            CloseBigBtn.Text = "X"
+            CloseBigBtn.TextColor3 = Color3.fromRGB(255, 80, 80)
+            CloseBigBtn.TextSize = 16
+            CloseBigBtn.Font = Enum.Font.GothamBold
+            CloseBigBtn.Parent = TopBar
+
+            CloseBigBtn.MouseButton1Click:Connect(function()
+                if BigTimerGui then
+                    BigTimerGui:Destroy()
+                    BigTimerGui = nil
+                end
+            end)
+
+            local BigDisplay = Instance.new("TextLabel")
+            BigDisplay.Size = UDim2.new(1, -40, 0, 60)
+            BigDisplay.Position = UDim2.new(0, 20, 0, 50)
+            BigDisplay.BackgroundTransparency = 1
+            BigDisplay.TextColor3 = Color3.fromRGB(255, 255, 255)
+            BigDisplay.TextSize = 36
+            BigDisplay.Font = Enum.Font.GothamBold
+            BigDisplay.Parent = MainFrame
+
+            local function getSecondsElapsed()
+                if isPaused then
+                    return math.floor(lastPauseStart - initialJoinTime - pausedTotalTime)
+                else
+                    return math.floor(workspace.DistributedGameTime - initialJoinTime - pausedTotalTime)
+                end
+            end
+
+            local function updateBigDisplay()
+                local currentSeconds = math.max(0, getSecondsElapsed())
+                local minutes = math.floor(currentSeconds / 60)
+                local seconds = currentSeconds % 60
+                BigDisplay.Text = string.format("%02d:%02d", minutes, seconds)
+            end
+            updateBigDisplay()
+
+            task.spawn(function()
+                while BigTimerGui and BigTimerGui.Parent do
+                    updateBigDisplay()
+                    task.wait(1)
+                end
+            end)
+
+            local PauseBtn = Instance.new("TextButton")
+            PauseBtn.Size = UDim2.new(1, -40, 0, 38)
+            PauseBtn.Position = UDim2.new(0, 20, 0, 120)
+            PauseBtn.BackgroundColor3 = isPaused and Color3.fromRGB(0, 120, 0) or Color3.fromRGB(120, 100, 0)
+            PauseBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+            PauseBtn.Text = isPaused and "Reanudar Temporizador" or "Pausar Temporizador"
+            PauseBtn.TextSize = 13
+            PauseBtn.Font = Enum.Font.GothamBold
+            PauseBtn.Parent = MainFrame
+
+            local PauseCorner = Instance.new("UICorner")
+            PauseCorner.CornerRadius = UDim.new(0, 6)
+            PauseCorner.Parent = PauseBtn
+
+            PauseBtn.MouseButton1Click:Connect(function()
+                if not isPaused then
+                    isPaused = true
+                    lastPauseStart = workspace.DistributedGameTime
+                    PauseBtn.BackgroundColor3 = Color3.fromRGB(0, 120, 0)
+                    PauseBtn.Text = "Reanudar Temporizador"
+                else
+                    pausedTotalTime = pausedTotalTime + (workspace.DistributedGameTime - lastPauseStart)
+                    isPaused = false
+                    PauseBtn.BackgroundColor3 = Color3.fromRGB(120, 100, 0)
+                    PauseBtn.Text = "Pausar Temporizador"
+                end
+            end)
+
+            local RemoveBtn = Instance.new("TextButton")
+            RemoveBtn.Size = UDim2.new(1, -40, 0, 38)
+            RemoveBtn.Position = UDim2.new(0, 20, 0, 168)
+            RemoveBtn.BackgroundColor3 = Color3.fromRGB(120, 0, 0)
+            RemoveBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+            RemoveBtn.Text = "Quitar Temporizador"
+            RemoveBtn.TextSize = 13
+            RemoveBtn.Font = Enum.Font.GothamBold
+            RemoveBtn.Parent = MainFrame
+
+            local RemoveCorner = Instance.new("UICorner")
+            RemoveCorner.CornerRadius = UDim.new(0, 6)
+            RemoveCorner.Parent = RemoveBtn
+
+            RemoveBtn.MouseButton1Click:Connect(function()
+                timerRemoved = true
+                if BigTimerGui then
+                    BigTimerGui:Destroy()
+                    BigTimerGui = nil
+                end
+                if TimerGui then
+                    TimerGui:Destroy()
+                    TimerGui = nil
+                end
+            end)
+        end)
+    end
+
+    createTimerGui()
+
+    task.spawn(function()
+        while true do
+            task.wait(1)
+            if TimerButton and TimerButton.Parent then
+                local currentSeconds
+                if isPaused then
+                    currentSeconds = math.floor(lastPauseStart - initialJoinTime - pausedTotalTime)
+                else
+                    currentSeconds = math.floor(workspace.DistributedGameTime - initialJoinTime - pausedTotalTime)
+                end
+                currentSeconds = math.max(0, currentSeconds)
+                local minutes = math.floor(currentSeconds / 60)
+                local seconds = currentSeconds % 60
+                TimerButton.Text = string.format("⏱️ %02d:%02d%s", minutes, seconds, isPaused and " (P.)" or "")
+            end
+        end
+    end)
+
+    -- Pantalla de Carga
+    local IntroGui = Instance.new("ScreenGui")
+    IntroGui.Name = "HalloweenIntro"
+    IntroGui.IgnoreGuiInset = true
+    IntroGui.Parent = CoreGui
+
+    local Background = Instance.new("ImageLabel")
+    Background.Size = UDim2.new(1, 0, 1, 0)
+    Background.BackgroundTransparency = 1
+    Background.Image = "rbxassetid://138097070120423"
+    Background.ScaleType = Enum.ScaleType.Slice
+    Background.Parent = IntroGui
+
+    local PumpkinContainer = Instance.new("Folder")
+    PumpkinContainer.Name = "Pumpkins"
+    PumpkinContainer.Parent = Background
+
+    local pumpkinSymbols = {"🎃", "🦇", "👻"}
+
+    for i = 1, 20 do
+        task.spawn(function()
+            local pumpkin = Instance.new("TextLabel")
+            pumpkin.Size = UDim2.new(0, 50, 0, 50)
+            pumpkin.BackgroundTransparency = 1
+            pumpkin.Text = pumpkinSymbols[math.random(1, #pumpkinSymbols)]
+            pumpkin.TextSize = math.random(25, 45)
+            pumpkin.Parent = PumpkinContainer
+
+            while IntroGui.Parent and not introFinished do
+                local startX = math.random(5, 95) / 100
+                pumpkin.Position = UDim2.new(startX, 0, 1.1, 0)
+                pumpkin.TextTransparency = 0
+                
+                local speed = math.random(4, 8)
+                local tweenInfo = TweenInfo.new(speed, Enum.EasingStyle.Linear)
+                
+                local tw = TweenService:Create(pumpkin, tweenInfo, {
+                    Position = UDim2.new(startX + math.random(-5, 5)/100, 0, -0.1, 0)
+                })
+                
+                tw:Play()
+                tw.Completed:Wait()
+            end
+            pumpkin:Destroy()
+        end)
+    end
+
+    local TerrorText = Instance.new("TextLabel")
+    TerrorText.Size = UDim2.new(1, 0, 0, 100)
+    TerrorText.Position = UDim2.new(0, 0, 0.45, -50)
+    TerrorText.BackgroundTransparency = 1
+    TerrorText.Text = "BIENVENID@"
+    TerrorText.TextSize = 65
+    TerrorText.Font = Enum.Font.Creepster
+    TerrorText.TextColor3 = Color3.fromRGB(255, 255, 255)
+    TerrorText.TextStrokeTransparency = 0
+    TerrorText.TextStrokeColor3 = Color3.fromRGB(180, 0, 0)
+    TerrorText.Parent = Background
+
+    local IntroSound = Instance.new("Sound")
+    IntroSound.SoundId = "rbxassetid://95028776242006"
+    IntroSound.Volume = 2
+    IntroSound.Parent = SoundService
+    IntroSound.TimePosition = 7
+    pcall(function() IntroSound:Play() end)
+
+    task.spawn(function()
+        local connection
+        local fadingOut = false
+        
+        connection = RunService.RenderStepped:Connect(function()
+            local currentTime = IntroSound.TimePosition
+            
+            if not fadingOut then
+                local hue = tick() % 5 / 5
+                TerrorText.TextColor3 = Color3.fromHSV(hue, 1, 1)
+            end
+            
+            if (currentTime >= 13 or not IntroSound.IsPlaying) and not fadingOut then
+                fadingOut = true
+                local tweenInfo = TweenInfo.new(1.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+                
+                local bgTween = TweenService:Create(Background, tweenInfo, {ImageTransparency = 1})
+                local textTween = TweenService:Create(TerrorText, tweenInfo, {TextTransparency = 1, TextStrokeTransparency = 1})
+                
+                bgTween:Play()
+                textTween:Play()
+                
+                for _, pumpkin in ipairs(PumpkinContainer:GetChildren()) do
+                    if pumpkin:IsA("TextLabel") then
+                        TweenService:Create(pumpkin, tweenInfo, {TextTransparency = 1}):Play()
+                    end
+                end
+                
+                pcall(function() IntroSound:Stop() end)
+                
+                task.delay(1.2, function()
+                    introFinished = true
+                    if TimerGui then
+                        TimerGui.Enabled = true
+                    end
+                    pcall(function()
+                        IntroSound:Destroy()
+                        IntroGui:Destroy()
+                    end)
+                end)
+                
+                connection:Disconnect()
+            end
+        end)
+    end)
+
+    -- Carga de WindUI
+    local successLoad, WindUI = pcall(function()
+        return loadstring(game:HttpGet("https://raw.githubusercontent.com/Footagesus/WindUI/refs/heads/main/dist/main.lua"))()
+    end)
+
+    if not successLoad or not WindUI then
+        warn("No se pudo cargar WindUI. Revisa tu ejecutor.")
+        return
+    end
+
+    local Window = Window or WindUI:CreateWindow({
+        Title = "ALE HUB",
+        Icon = "monitor",
+        Author = "V1.0",
+        Folder = "MiMenuWindUI",
+        Size = UDim2.fromOffset(580, 460),
+        KeySystem = false,
+    })
+
+    -- ================= PESTAÑA CONFIGURACIÓN =================
+    local ConfigTab = Window:Tab({
+        Title = "Configuración",
+        Icon = "settings",
+    })
+
+    ConfigTab:Toggle({
+        Title = "Modo Oscuro / Claro (Theme)",
+        Description = "Cambia el estilo visual del menú entre oscuro o claro.",
+        Value = true,
+        Callback = function(state)
+            if not introFinished then return end
+            WindUI:SetTheme(state and "Dark" or "Light")
+        end,
+    })
+
+    ConfigTab:Button({
+        Title = "Volver a poner temporizador",
+        Description = "Vuelve a mostrar el temporizador flotante en pantalla con el tiempo real acumulado.",
+        Callback = function()
+            timerRemoved = false
+            createTimerGui()
+        end,
+    })
+
+    ConfigTab:Button({
+        Title = "Copiar ID del Servidor (JobId)",
+        Description = "Copia el código único de este servidor al portapapeles.",
+        Callback = function()
+            pcall(function()
+                if setclipboard then
+                    setclipboard(game.JobId)
+                end
+            end)
+        end,
+    })
+
+    ConfigTab:Button({
+        Title = "Reconectar Servidor (Rejoin)",
+        Description = "Te reconecta automáticamente al mismo juego.",
+        Callback = function()
+            pcall(function()
+                TeleportService:TeleportToPlaceInstance(game.PlaceId, game.JobId, LocalPlayer)
+            end)
+        end,
+    })
+
+    ConfigTab:Button({
+        Title = "Optimización (FPS Boost)",
+        Description = "Desactiva sombras y niebla para mejorar el rendimiento.",
+        Callback = function()
+            pcall(function()
+                Lighting.GlobalShadows = false
+                Lighting.FogEnd = 999999
+                for _, v in ipairs(Lighting:GetChildren()) do
+                    if v:IsA("PostEffect") then
+                        v.Enabled = false
+                    end
+                end
+            end)
+        end,
+    })
+
+    ConfigTab:Button({
+        Title = "Fluidez Máxima (Antitrabas / FPS Boost)",
+        Description = "Desactiva efectos pesados, texturas detalladas y baja la calidad para que no se trabe nada.",
+        Callback = function()
+            pcall(function()
+                settings().Rendering.QualityLevel = Enum.QualityLevel.Level01
+                Lighting.GlobalShadows = false
+                Lighting.FogEnd = 999999
+                Lighting.Brightness = 2
+                for _, v in ipairs(Lighting:GetChildren()) do
+                    if v:IsA("PostEffect") or v:IsA("Sky") then
+                        v.Enabled = false
+                    end
+                end
+                
+                for _, part in ipairs(workspace:GetDescendants()) do
+                    if part:IsA("BasePart") then
+                        part.Material = Enum.Material.SmoothPlastic
+                        part.Reflectance = 0
+                    elseif part:IsA("Decal") or part:IsA("Texture") then
+                        part.Transparency = 1
+                    elseif part:IsA("ParticleEmitter") or part:IsA("Trail") or part:IsA("Fire") or part:IsA("Smoke") or part:IsA("Sparkles") then
+                        part.Enabled = false
+                    end
+                end
+                
+                WindUI:Notify({
+                    Title = "Fluidez Activada",
+                    Content = "¡Gráficos y efectos optimizados para máxima velocidad!",
+                    Duration = 4,
+                })
+            end)
+        end,
+    })
+
+    ConfigTab:Button({
+        Title = "Reiniciar Personaje",
+        Description = "Te mata y respawnea instantáneamente si te quedas trabado.",
+        Callback = function()
+            local character = LocalPlayer.Character
+            if character and character:FindFirstChildOfClass("Humanoid") then
+                character:FindFirstChildOfClass("Humanoid").Health = 0
+            end
+        end,
+    })
+
+    local menuVisible = true
+
+    local function ToggleMenu()
+        menuVisible = not menuVisible
+        
+        pcall(function()
+            for _, gui in ipairs(CoreGui:GetChildren()) do
+                if gui:IsA("ScreenGui") and gui.Name ~= "HalloweenIntro" and gui.Name ~= "AleHubPlaytimeTimer" and gui.Name ~= "AleHubBigTimer" then
+                    if gui:FindFirstChild("Frame") or gui:FindFirstChild("Container") then
+                        gui.Enabled = menuVisible
+                    end
+                end
+            end
+        end)
+    end
+
+    ConfigTab:Button({
+        Title = "Ocultar / Mostrar Menú",
+        Description = "Oculta el menú visualmente en tu pantalla. (Solo para PC, computadora)",
+        Callback = function()
+            ToggleMenu()
+        end,
+    })
+
+    -- ================= PESTAÑA JUGADOR =================
+    local Tab = Window:Tab({
+        Title = "Jugador",
+        Icon = "user",
+    })
+
+    local NoclipEnabled = false
+
+    RunService.Stepped:Connect(function()
+        local character = LocalPlayer.Character
+        if character and NoclipEnabled then
+            for _, part in ipairs(character:GetDescendants()) do
+                if part:IsA("BasePart") then
+                    part.CanCollide = false
+                end
+            end
+        end
+    end)
+
+    Tab:Toggle({
+        Title = "Noclip",
+        Description = "Permite atravesar paredes y objetos.",
+        Value = false,
+        Callback = function(state)
+            if not introFinished then return end
+            NoclipEnabled = state
+        end,
+    })
+
+    Tab:Input({
+        Title = "Velocidad (Speed)",
+        Description = "Escribe la cantidad de velocidad que deseas.",
+        Placeholder = "Ej. 100",
+        Callback = function(text)
+            local speedValue = tonumber(text)
+            if speedValue then
+                local character = LocalPlayer.Character
+                if character and character:FindFirstChildOfClass("Humanoid") then
+                    character:FindFirstChildOfClass("Humanoid").WalkSpeed = speedValue
+                end
+            end
+        end,
+    })
+
+    Tab:Input({
+        Title = "Salto",
+        Description = "Escribe la potencia de salto que deseas.",
+        Placeholder = "Ej. 50",
+        Callback = function(text)
+            local jumpValue = tonumber(text)
+            if jumpValue then
+                local character = LocalPlayer.Character
+                if character and character:FindFirstChildOfClass("Humanoid") then
+                    local humanoid = character:FindFirstChildOfClass("Humanoid")
+                    humanoid.UseJumpPower = true
+                    humanoid.JumpPower = jumpValue
+                end
+            end
+        end,
+    })
+
+    local InfiniteJumpEnabled = false
+
+    UserInputService.JumpRequest:Connect(function()
+        if InfiniteJumpEnabled then
+            local character = LocalPlayer.Character
+            if character and character:FindFirstChildOfClass("Humanoid") then
+                character:FindFirstChildOfClass("Humanoid"):ChangeState(Enum.HumanoidStateType.Jumping)
+            end
+        end
+    end)
+
+    Tab:Toggle({
+        Title = "Infinite Jump",
+        Description = "Permite saltar infinitamente en el aire.",
+        Value = false,
+        Callback = function(state)
+            if not introFinished then return end
+            InfiniteJumpEnabled = state
+        end,
+    })
+
+    -- ================= MODO DESLIZAMIENTO / CONGELAR ANIMACIÓN =================
+    local FreezeAnimEnabled = false
+    local SlideSpeed = 50
+
+    Tab:Input({
+        Title = "Velocidad de Deslizamiento",
+        Description = "Escribe la velocidad con la que te deslizas en modo estático.",
+        Placeholder = "Ej. 50",
+        Callback = function(text)
+            local val = tonumber(text)
+            if val then
+                SlideSpeed = val
+            end
+        end,
+    })
+
+    Tab:Toggle({
+        Title = "Congelar Animación (Modo Deslizamiento)",
+        Description = "Te deslizas con la pose estática sin mostrar animaciones de movimiento para nadie.",
+        Value = false,
+        Callback = function(state)
+            if not introFinished then return end
+            FreezeAnimEnabled = state
+            
+            local character = LocalPlayer.Character
+            local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+            local animator = humanoid and humanoid:FindFirstChildOfClass("Animator")
+            
+            if state then
+                if animator then
+                    for _, track in ipairs(animator:GetPlayingAnimationTracks()) do
+                        track:AdjustSpeed(0)
+                    end
+                end
+            else
+                if humanoid then
+                    humanoid.WalkSpeed = 16
+                end
+                if animator then
+                    for _, track in ipairs(animator:GetPlayingAnimationTracks()) do
+                        track:AdjustSpeed(1)
+                    end
+                end
+            end
+        end,
+    })
+
+    -- ================= BOTÓN FLOTANTE DESLIZAR =================
+    local SlideGui = Instance.new("ScreenGui")
+    SlideGui.Name = "AleHubSlideGui"
+    SlideGui.IgnoreGuiInset = true
+    SlideGui.Enabled = false
+    SlideGui.Parent = CoreGui
+
+    local FloatSlideBtn = Instance.new("TextButton")
+    FloatSlideBtn.Size = UDim2.new(0, 55, 0, 55)
+    FloatSlideBtn.Position = UDim2.new(0.5, -27, 0.4, 0)
+    FloatSlideBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 40)
+    FloatSlideBtn.Text = ""
+    FloatSlideBtn.Parent = SlideGui
+
+    local FloatCorner = Instance.new("UICorner")
+    FloatCorner.CornerRadius = UDim.new(0, 12)
+    FloatCorner.Parent = FloatSlideBtn
+
+    local FloatStroke = Instance.new("UIStroke")
+    FloatStroke.Color = Color3.fromRGB(168, 85, 247)
+    FloatStroke.Thickness = 2
+    FloatStroke.Parent = FloatSlideBtn
+
+    local FloatIcon = Instance.new("TextLabel")
+    FloatIcon.Size = UDim2.new(1, 0, 1, 0)
+    FloatIcon.BackgroundTransparency = 1
+    FloatIcon.Text = "🏃"
+    FloatIcon.TextSize = 26
+    FloatIcon.Parent = FloatSlideBtn
+
+    local isFloatActive = false
+    local canMoveFloat = false
+
+    FloatSlideBtn.MouseButton1Click:Connect(function()
+        if canMoveFloat then return end
+        isFloatActive = not isFloatActive
+        
+        if isFloatActive then
+            FloatStroke.Color = Color3.fromRGB(0, 255, 120)
+            FloatSlideBtn.BackgroundColor3 = Color3.fromRGB(20, 50, 30)
+            FreezeAnimEnabled = true
+        else
+            FloatStroke.Color = Color3.fromRGB(168, 85, 247)
+            FloatSlideBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 40)
+            FreezeAnimEnabled = false
+            local character = LocalPlayer.Character
+            local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+            local animator = humanoid and humanoid:FindFirstChildOfClass("Animator")
+            if humanoid then humanoid.WalkSpeed = 16 end
+            if animator then
+                for _, track in ipairs(animator:GetPlayingAnimationTracks()) do
+                    track:AdjustSpeed(1)
+                end
+            end
+        end
+    end)
+
+    -- Lógica para arrastrar el botón flotante
+    local dragging, dragInput, dragStart, startPos
+    FloatSlideBtn.InputBegan:Connect(function(input)
+        if canMoveFloat and (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) then
+            dragging = true
+            dragStart = input.Position
+            startPos = FloatSlideBtn.Position
+            input.Changed:Connect(function()
+                if input.UserInputState == Enum.UserInputState.End then
+                    dragging = false
+                end
+            end)
+        end
+    end)
+
+    FloatSlideBtn.InputChanged:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+            dragInput = input
+        end
+    end)
+
+    UserInputService.InputChanged:Connect(function(input)
+        if dragging and input == dragInput then
+            local delta = input.Position - dragStart
+            FloatSlideBtn.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+        end
+    end)
+
+    Tab:Toggle({
+        Title = "Botón Flotante Deslizar",
+        Description = "Muestra un botón flotante chido en pantalla para activar/desactivar el modo deslizamiento.",
+        Value = false,
+        Callback = function(state)
+            if not introFinished then return end
+            SlideGui.Enabled = state
+            if not state then
+                isFloatActive = false
+                FloatStroke.Color = Color3.fromRGB(168, 85, 247)
+                FloatSlideBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 40)
+                FreezeAnimEnabled = false
+            end
+        end,
+    })
+
+    Tab:Toggle({
+        Title = "Mover Botón",
+        Description = "Permite arrastrar y mover libremente el botón flotante por tu pantalla.",
+        Value = false,
+        Callback = function(state)
+            if not introFinished then return end
+            canMoveFloat = state
+        end,
+    })
+
+    -- ================= FUNCIÓN AGARRAR RÁPIDO =================
+    local FastGrabEnabled = false
+    local originalHoldDurations = {}
+
+    local function applyFastGrabToPrompt(prompt)
+        if prompt:IsA("ProximityPrompt") then
+            if FastGrabEnabled then
+                if originalHoldDurations[prompt] == nil then
+                    originalHoldDurations[prompt] = prompt.HoldDuration
+                end
+                prompt.HoldDuration = 0
+            end
+        end
+    end
+
+    workspace.DescendantAdded:Connect(function(descendant)
+        if FastGrabEnabled then
+            applyFastGrabToPrompt(descendant)
+        end
+    end)
+
+    Tab:Toggle({
+        Title = "Agarrar Rápido",
+        Description = "Permite agarrar o interactuar con cualquier objeto instantáneamente con solo un toque, sin mantener presionado.",
+        Value = false,
+        Callback = function(state)
+            if not introFinished then return end
+            FastGrabEnabled = state
+            
+            for _, descendant in ipairs(workspace:GetDescendants()) do
+                if descendant:IsA("ProximityPrompt") then
+                    if state then
+                        if originalHoldDurations[descendant] == nil then
+                            originalHoldDurations[descendant] = descendant.HoldDuration
+                        end
+                        descendant.HoldDuration = 0
+                    else
+                        if originalHoldDurations[descendant] ~= nil then
+                            descendant.HoldDuration = originalHoldDurations[descendant]
+                        end
+                    end
+                end
+            end
+        end,
+    })
+
+    Tab:Button({
+        Title = "Equip TLP",
+        Description = "Te equipa una herramienta para teletransportarte al hacer clic en el mapa.",
+        Callback = function()
+            pcall(function()
+                local backpack = LocalPlayer:FindFirstChildOfClass("Backpack")
+                local character = LocalPlayer.Character
+                
+                if not backpack or not character then return end
+                
+                if character:FindFirstChild("Click Teleport") or backpack:FindFirstChild("Click Teleport") then
+                    return
+                end
+                
+                local tool = Instance.new("Tool")
+                tool.Name = "Click Teleport"
+                tool.RequiresHandle = false
+                tool.Parent = backpack
+                
+                tool.Activated:Connect(function()
+                    local mouse = LocalPlayer:GetMouse()
+                    local targetPos = mouse.Hit
+                    if targetPos then
+                        local hrp = character:FindFirstChild("HumanoidRootPart")
+                        if hrp then
+                            hrp.CFrame = targetPos + Vector3.new(0, 3, 0)
+                        end
+                    end
+                end)
+            end)
+        end,
+    })
+
+    -- ================= SISTEMA DE FLY =================
+    local FlyEnabled = false
+    local FlySpeed = 50
+    local bv, bg
+    local keysDown = {W = false, A = false, S = false, D = false, Space = false, Shift = false}
+
+    UserInputService.InputBegan:Connect(function(input, gameProcessed)
+        if gameProcessed then return end
+        if input.KeyCode == Enum.KeyCode.W then keysDown.W = true end
+        if input.KeyCode == Enum.KeyCode.A then keysDown.A = true end
+        if input.KeyCode == Enum.KeyCode.S then keysDown.S = true end
+        if input.KeyCode == Enum.KeyCode.D then keysDown.D = true end
+        if input.KeyCode == Enum.KeyCode.Space then keysDown.Space = true end
+        if input.KeyCode == Enum.KeyCode.LeftShift then keysDown.Shift = true end
+    end)
+
+    UserInputService.InputEnded:Connect(function(input)
+        if input.KeyCode == Enum.KeyCode.W then keysDown.W = false end
+        if input.KeyCode == Enum.KeyCode.A then keysDown.A = false end
+        if input.KeyCode == Enum.KeyCode.S then keysDown.S = false end
+        if input.KeyCode == Enum.KeyCode.D then keysDown.D = false end
+        if input.KeyCode == Enum.KeyCode.Space then keysDown.Space = false end
+        if input.KeyCode == Enum.KeyCode.LeftShift then keysDown.Shift = false end
+    end)
+
+    Tab:Toggle({
+        Title = "Fly (Vuelo)",
+        Description = "Vuela y sigue la dirección exacta de tu joystick o teclado.",
+        Value = false,
+        Callback = function(state)
+            if not introFinished then return end
+            FlyEnabled = state
+            local character = LocalPlayer.Character
+            local hrp = character and character:FindFirstChild("HumanoidRootPart")
+            local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+
+            if state then
+                if hrp then
+                    bv = Instance.new("BodyVelocity")
+                    bv.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
+                    bv.Velocity = Vector3.new(0, 0, 0)
+                    bv.Parent = hrp
+
+                    bg = Instance.new("BodyGyro")
+                    bg.MaxTorque = Vector3.new(math.huge, math.huge, math.huge)
+                    bg.CFrame = hrp.CFrame
+                    bg.Parent = hrp
+
+                    if humanoid then
+                        humanoid.PlatformStand = true
+                    end
+                end
+            else
+                if bv then bv:Destroy() bv = nil end
+                if bg then bg:Destroy() bg = nil end
+                if humanoid then
+                    humanoid.PlatformStand = false
+                end
+            end
+        end,
+    })
+
+    Tab:Input({
+        Title = "Velocidad de Vuelo (Fly Speed)",
+        Description = "Escribe la velocidad con la que deseas volar.",
+        Placeholder = "Ej. 50",
+        Callback = function(text)
+            local val = tonumber(text)
+            if val then
+                FlySpeed = val
+            end
+        end,
+    })
+
+    RunService.RenderStepped:Connect(function()
+        if FreezeAnimEnabled and LocalPlayer.Character then
+            local character = LocalPlayer.Character
+            local hrp = character:FindFirstChild("HumanoidRootPart")
+            local humanoid = character:FindFirstChildOfClass("Humanoid")
+            local animator = humanoid and humanoid:FindFirstChildOfClass("Animator")
+            
+            if hrp and humanoid then
+                humanoid.WalkSpeed = 0
+                
+                if animator then
+                    for _, track in ipairs(animator:GetPlayingAnimationTracks()) do
+                        if track.Speed ~= 0 then
+                            track:AdjustSpeed(0)
+                        end
+                    end
+                end
+                
+                local moveDir = Vector3.new(0, 0, 0)
+                if Controls then
+                    local moveVector = Controls:GetMoveVector()
+                    if moveVector.Magnitude > 0 then
+                        moveDir = Camera.CFrame:VectorToWorldSpace(Vector3.new(moveVector.X, 0, moveVector.Z))
+                    end
+                end
+                
+                if keysDown.W then moveDir = moveDir + Camera.CFrame.LookVector end
+                if keysDown.S then moveDir = moveDir - Camera.CFrame.LookVector end
+                if keysDown.A then moveDir = moveDir - Camera.CFrame.RightVector end
+                if keysDown.D then moveDir = moveDir + Camera.CFrame.RightVector end
+                
+                if moveDir.Magnitude > 0 then
+                    local flatDir = Vector3.new(moveDir.X, 0, moveDir.Z).Unit
+                    hrp.CFrame = hrp.CFrame + (flatDir * (SlideSpeed * 0.016))
+                end
+            end
+        end
+
+        if FlyEnabled and LocalPlayer.Character then
+            local hrp = LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+            if hrp and bv and bg then
+                bg.CFrame = Camera.CFrame
+                
+                local moveDir = Vector3.new(0, 0, 0)
+                
+                if Controls then
+                    local moveVector = Controls:GetMoveVector()
+                    if moveVector.Magnitude > 0 then
+                        moveDir = Camera.CFrame:VectorToWorldSpace(Vector3.new(moveVector.X, 0, moveVector.Z))
+                    end
+                end
+                
+                if keysDown.W then moveDir = moveDir + Camera.CFrame.LookVector end
+                if keysDown.S then moveDir = moveDir - Camera.CFrame.LookVector end
+                if keysDown.A then moveDir = moveDir - Camera.CFrame.RightVector end
+                if keysDown.D then moveDir = moveDir + Camera.CFrame.RightVector end
+                if keysDown.Space then moveDir = moveDir + Vector3.new(0, 1, 0) end
+                if keysDown.Shift then moveDir = moveDir - Vector3.new(0, 1, 0) end
+
+                if moveDir.Magnitude > 0 then
+                    bv.Velocity = moveDir.Unit * FlySpeed
+                else
+                    bv.Velocity = Vector3.new(0, 0.1, 0)
+                end
+            end
+        end
+    end)
+
+    -- ================= LISTA DE JUGADORES =================
+    local selectedPlayerName = nil
+    local spectatePlayerName = nil
+    local followPlayerName = nil
+
+    local teleportDropdown, spectateDropdown, followDropdown
+
+    local function getUpdatedPlayerList()
+        local list = {}
+        for _, p in ipairs(Players:GetPlayers()) do
+            if p ~= LocalPlayer then
+                table.insert(list, p.Name)
+            end
+        end
+        return list
+    end
+
+    teleportDropdown = Tab:Dropdown({
+        Title = "Seleccionar Jugador",
+        Description = "Elige un jugador del servidor.",
+        Values = getUpdatedPlayerList(),
+        Callback = function(option)
+            selectedPlayerName = option
+        end,
+    })
+
+    Tab:Button({
+        Title = "Teletransportarse a Jugador",
+        Description = "Te lleva instantáneamente hacia el jugador seleccionado.",
+        Callback = function()
+            if selectedPlayerName then
+                local targetPlayer = Players:FindFirstChild(selectedPlayerName)
+                if targetPlayer and targetPlayer.Character and targetPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                    local myChar = LocalPlayer.Character
+                    if myChar and myChar:FindFirstChild("HumanoidRootPart") then
+                        myChar.HumanoidRootPart.CFrame = targetPlayer.Character.HumanoidRootPart.CFrame + Vector3.new(0, 3, 0)
+                    end
+                end
+            end
+        end,
+    })
+
+    spectateDropdown = Tab:Dropdown({
+        Title = "Seleccionar para Espectar",
+        Description = "Elige al jugador que deseas observar con la cámara.",
+        Values = getUpdatedPlayerList(),
+        Callback = function(option)
+            spectatePlayerName = option
+        end,
+    })
+
+    Tab:Button({
+        Title = "Espectar Jugador",
+        Description = "Pone tu cámara en modo espectador sobre el jugador elegido.",
+        Callback = function()
+            if spectatePlayerName then
+                local targetPlayer = Players:FindFirstChild(spectatePlayerName)
+                if targetPlayer and targetPlayer.Character and targetPlayer.Character:FindFirstChild("Humanoid") then
+                    Camera.CameraSubject = targetPlayer.Character.Humanoid
+                end
+            end
+        end,
+    })
+
+    Tab:Button({
+        Title = "Dejar de Espectar",
+        Description = "Devuelve la cámara a tu propio personaje.",
+        Callback = function()
+            if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
+                Camera.CameraSubject = LocalPlayer.Character.Humanoid
+            end
+        end,
+    })
+
+    -- ================= ESP =================
+    local ESPEnabled = false
+    local espObjects = {}
+
+    local function createESPForPlayer(player)
+        local char = player.Character
+        if not char then return end
+        
+        local head = char:FindFirstChild("Head")
+        if not head then return end
+
+        local highlight = Instance.new("Highlight")
+        highlight.Name = "AleHubESP_Highlight"
+        highlight.Adornee = char
+        highlight.FillColor = Color3.fromRGB(255, 0, 0)
+        highlight.OutlineColor = Color3.fromRGB(255, 255, 255)
+        highlight.FillTransparency = 0.5
+        highlight.OutlineTransparency = 0
+        highlight.Parent = char
+
+        local billboard = Instance.new("BillboardGui")
+        billboard.Name = "AleHubESP_NameTag"
+        billboard.Adornee = head
+        billboard.Size = UDim2.new(0, 200, 0, 60)
+        billboard.StudsOffset = Vector3.new(0, 2.8, 0)
+        billboard.AlwaysOnTop = true
+        billboard.Parent = char
+
+        local displayLabel = Instance.new("TextLabel")
+        displayLabel.Size = UDim2.new(1, 0, 0.33, 0)
+        displayLabel.Position = UDim2.new(0, 0, 0, 0)
+        displayLabel.BackgroundTransparency = 1
+        displayLabel.Text = player.DisplayName
+        displayLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+        displayLabel.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
+        displayLabel.TextStrokeTransparency = 0
+        displayLabel.TextSize = 14
+        displayLabel.Font = Enum.Font.GothamBold
+        displayLabel.Parent = billboard
+
+        local userLabel = Instance.new("TextLabel")
+        userLabel.Size = UDim2.new(1, 0, 0.33, 0)
+        userLabel.Position = UDim2.new(0, 0, 0.33, 0)
+        userLabel.BackgroundTransparency = 1
+        userLabel.Text = "@" .. player.Name
+        userLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
+        userLabel.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
+        userLabel.TextStrokeTransparency = 0
+        userLabel.TextSize = 12
+        userLabel.Font = Enum.Font.Gotham
+        userLabel.Parent = billboard
+
+        local distanceLabel = Instance.new("TextLabel")
+        distanceLabel.Name = "DistanceLabel"
+        distanceLabel.Size = UDim2.new(1, 0, 0.33, 0)
+        distanceLabel.Position = UDim2.new(0, 0, 0.66, 0)
+        distanceLabel.BackgroundTransparency = 1
+        distanceLabel.Text = "0 studs"
+        distanceLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+        distanceLabel.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
+        distanceLabel.TextStrokeTransparency = 0
+        distanceLabel.TextSize = 12
+        distanceLabel.Font = Enum.Font.GothamBold
+        distanceLabel.Parent = billboard
+
+        espObjects[player] = {
+            Highlight = highlight,
+            NameTag = billboard,
+            DistanceLabel = distanceLabel
+        }
+    end
+
+    local function removeESPForPlayer(player)
+        if espObjects[player] then
+            if espObjects[player].Highlight then espObjects[player].Highlight:Destroy() end
+            if espObjects[player].NameTag then espObjects[player].NameTag:Destroy() end
+            espObjects[player] = nil
+        end
+    end
+
+    RunService.RenderStepped:Connect(function()
+        if not ESPEnabled then return end
+        
+        local myChar = LocalPlayer.Character
+        local myHrp = myChar and myChar:FindFirstChild("HumanoidRootPart")
+
+        for _, player in ipairs(Players:GetPlayers()) do
+            if player ~= LocalPlayer then
+                local char = player.Character
+                if char and char:FindFirstChild("Head") and char:FindFirstChild("HumanoidRootPart") then
+                    if not espObjects[player] or not char:FindFirstChild("AleHubESP_Highlight") then
+                        removeESPForPlayer(player)
+                        createESPForPlayer(player)
+                    end
+                    
+                    if espObjects[player] and espObjects[player].DistanceLabel and myHrp then
+                        local targetHrp = char.HumanoidRootPart
+                        local distance = math.floor((targetHrp.Position - myHrp.Position).Magnitude)
+                        espObjects[player].DistanceLabel.Text = distance .. " studs"
+                    end
+                else
+                    removeESPForPlayer(player)
+                end
+            end
+        end
+    end)
+
+    Tab:Toggle({
+        Title = "Player ESP",
+        Description = "Destaca a los jugadores, muestra su Display Name, User original y distancia.",
+        Value = false,
+        Callback = function(state)
+            if not introFinished then return end
+            ESPEnabled = state
+            if not state then
+                for player, _ in pairs(espObjects) do
+                    removeESPForPlayer(player)
+                end
+                espObjects = {}
+            end
+        end,
+    })
+
+    -- ================= PESTAÑA SEGUIMIENTO =================
+    local FollowTab = Window:Tab({
+        Title = "Seguimiento",
+        Icon = "compass",
+    })
+
+    local FollowEnabled = false
+
+    followDropdown = FollowTab:Dropdown({
+        Title = "Seleccionar a quién Seguir",
+        Description = "Elige al jugador que tu personaje va a seguir automáticamente.",
+        Values = getUpdatedPlayerList(),
+        Callback = function(option)
+            followPlayerName = option
+        end,
+    })
+
+    FollowTab:Toggle({
+        Title = "Seguir a Jugador",
+        Description = "Tu personaje caminará y seguirá a la persona seleccionada.",
+        Value = false,
+        Callback = function(state)
+            if not introFinished then return end
+            FollowEnabled = state
+        end,
+    })
+
+    RunService.RenderStepped:Connect(function()
+        if FollowEnabled and followPlayerName then
+            local targetPlayer = Players:FindFirstChild(followPlayerName)
+            if targetPlayer and targetPlayer.Character then
+                local targetHRP = targetPlayer.Character:FindFirstChild("HumanoidRootPart")
+                local myChar = LocalPlayer.Character
+                if targetHRP and myChar then
+                    local myHumanoid = myChar:FindFirstChildOfClass("Humanoid")
+                    if myHumanoid then
+                        myHumanoid:MoveTo(targetHRP.Position)
+                    end
+                end
+            end
+        end
+    end)
+
+    -- ================= PESTAÑA: ÷×+ (CALCULADORA E IA) =================
+    local CalcTab = Window:Tab({
+        Title = "÷×+",
+        Icon = "calculator",
+    })
+
+    local CalcGui = nil
+    local AIGui = nil
+
+    local function playSound(soundId)
+        pcall(function()
+            local sound = Instance.new("Sound")
+            sound.SoundId = "rbxassetid://" .. tostring(soundId)
+            sound.Volume = 1
+            sound.Parent = SoundService
+            sound:Play()
+            sound.Ended:Connect(function()
+                sound:Destroy()
+            end)
+        end)
+    end
+
+    local function closeCalculator()
+        if CalcGui then
+            playSound("139804904213958")
+            CalcGui:Destroy()
+            CalcGui = nil
+        end
+    end
+
+    local function createCalculator()
+        if CalcGui then CalcGui:Destroy() end
+
+        CalcGui = Instance.new("ScreenGui")
+        CalcGui.Name = "AleHubCalculator"
+        CalcGui.IgnoreGuiInset = true
+        CalcGui.Parent = CoreGui
+
+        local MainFrame = Instance.new("Frame")
+        MainFrame.Size = UDim2.new(0, 280, 0, 440)
+        MainFrame.Position = UDim2.new(0.5, -140, 0.5, -220)
+        MainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 35)
+        MainFrame.BorderSizePixel = 0
+        MainFrame.Active = true
+        MainFrame.Draggable = true
+        MainFrame.Parent = CalcGui
+
+        local UICorner = Instance.new("UICorner")
+        UICorner.CornerRadius = UDim.new(0, 8)
+        UICorner.Parent = MainFrame
+
+        local TopBar = Instance.new("Frame")
+        TopBar.Size = UDim2.new(1, 0, 0, 35)
+        TopBar.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
+        TopBar.BorderSizePixel = 0
+        TopBar.Parent = MainFrame
+
+        local TopCorner = Instance.new("UICorner")
+        TopCorner.CornerRadius = UDim.new(0, 8)
+        TopCorner.Parent = TopBar
+
+        local TitleLabel = Instance.new("TextLabel")
+        TitleLabel.Size = UDim2.new(1, -40, 1, 0)
+        TitleLabel.Position = UDim2.new(0, 10, 0, 0)
+        TitleLabel.BackgroundTransparency = 1
+        TitleLabel.Text = "Calculadora ALE HUB"
+        TitleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+        TitleLabel.TextSize = 14
+        TitleLabel.Font = Enum.Font.GothamBold
+        TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
+        TitleLabel.Parent = TopBar
+
+        local CloseButton = Instance.new("TextButton")
+        CloseButton.Size = UDim2.new(0, 35, 0, 35)
+        CloseButton.Position = UDim2.new(1, -35, 0, 0)
+        CloseButton.BackgroundTransparency = 1
+        CloseButton.Text = "X"
+        CloseButton.TextColor3 = Color3.fromRGB(255, 80, 80)
+        CloseButton.TextSize = 16
+        CloseButton.Font = Enum.Font.GothamBold
+        CloseButton.Parent = TopBar
+
+        CloseButton.MouseButton1Click:Connect(function()
+            closeCalculator()
+        end)
+
+        local Display = Instance.new("TextBox")
+        Display.Size = UDim2.new(1, -20, 0, 50)
+        Display.Position = UDim2.new(0, 10, 0, 45)
+        Display.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+        Display.TextColor3 = Color3.fromRGB(255, 255, 255)
+        Display.TextSize = 20
+        Display.Font = Enum.Font.Gotham
+        Display.PlaceholderText = "Escribe aquí..."
+        Display.Text = ""
+        Display.ClearTextOnFocus = false
+        Display.Parent = MainFrame
+
+        local DisplayCorner = Instance.new("UICorner")
+        DisplayCorner.CornerRadius = UDim.new(0, 6)
+        DisplayCorner.Parent = Display
+
+        local ButtonsGrid = Instance.new("Frame")
+        ButtonsGrid.Size = UDim2.new(1, -20, 1, -110)
+        ButtonsGrid.Position = UDim2.new(0, 10, 0, 105)
+        ButtonsGrid.BackgroundTransparency = 1
+        ButtonsGrid.Parent = MainFrame
+
+        local GridLayout = Instance.new("UIGridLayout")
+        GridLayout.CellSize = UDim2.new(0, 60, 0, 42)
+        GridLayout.CellPadding = UDim2.new(0, 5, 0, 5)
+        GridLayout.Parent = ButtonsGrid
+
+        local buttonsData = {
+            "C", "⌫", "(", ")",
+            "÷", "7", "8", "9",
+            "×", "4", "5", "6",
+            "-", "1", "2", "3",
+            "+", "0", ".", "*",
+            "%", "="
+        }
+
+        for _, text in ipairs(buttonsData) do
+            local Btn = Instance.new("TextButton")
+            Btn.Size = UDim2.new(0, 0, 0, 0)
+            Btn.BackgroundColor3 = Color3.fromRGB(45, 45, 52)
+            Btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+            Btn.TextSize = 16
+            Btn.Font = Enum.Font.GothamBold
+            Btn.Text = text
+            Btn.Parent = ButtonsGrid
+
+            local BtnCorner = Instance.new("UICorner")
+            BtnCorner.CornerRadius = UDim.new(0, 6)
+            BtnCorner.Parent = Btn
+
+            Btn.MouseButton1Click:Connect(function()
+                playSound("6895079853")
+
+                if text == "C" then
+                    Display.Text = ""
+                elseif text == "⌫" then
+                    if #Display.Text > 0 then
+                        Display.Text = string.sub(Display.Text, 1, #Display.Text - 1)
+                    end
+                elseif text == "=" then
+                    local success, result = pcall(function()
+                        local expression = Display.Text
+                        expression = string.gsub(expression, "÷", "/")
+                        expression = string.gsub(expression, "×", "*")
+                        expression = string.gsub(expression, "%%", "/100")
+
+                        local func = loadstring("return " .. expression)
+                        if func then
+                            return func()
+                        end
+                        error("Expresión inválida")
+                    end)
+
+                    if success and result ~= nil then
+                        Display.Text = tostring(result)
+                    else
+                        Display.Text = "Error"
+                    end
+                else
+                    Display.Text = Display.Text .. text
+                end
+            end)
+        end
+    end
+
+    local function closeAI()
+        if AIGui then
+            playSound("139804904213958")
+            AIGui:Destroy()
+            AIGui = nil
+        end
+    end
+
+    local function getAIResponse(question)
+        local q = string.lower(question)
+        
+        if string.find(q, "creó") or string.find(q, "creador") or string.find(q, "id") or string.find(q, "quien te hizo") or string.find(q, "quien te programó") then
+            return "[COLOR_RED]No puedo decir quién me creó, porque es privado."
+        end
+
+        if string.find(q, "persona más inteligente") or string.find(q, "mas inteligente del mundo") then
+            return "Actualmente, la persona viva con el coeficiente intelectual (IQ) más alto comprobado de manera oficial es Marilyn vos Savant, aunque a lo largo de la historia genios como Albert Einstein o Stephen Hawking han sido considerados los más inteligentes del mundo."
+        elseif string.find(q, "fede") or string.find(q, "vigevani") then
+            return "Fede Vigevani (Federico Augusto Vigevani de Arce) es un famoso creador de contenido, influencer y músico uruguayo nacido el 1 de octubre de 1994. Actualmente tiene 31 años, es muy conocido por sus retos extremos, videos de terror con 'La Vecibanda' y su gran éxito en internet."
+        elseif string.find(q, "huesos") and (string.find(q, "cuerpo") or string.find(q, "humano")) then
+            return "El cuerpo humano de un adulto tiene exactamente 206 huesos, los cuales forman el esqueleto para dar soporte, protección y permitir el movimiento."
+        elseif string.find(q, "google") then
+            return "Google es una multinacional tecnológica estadounidense especializada en productos y servicios relacionados con internet, software, dispositivos electrónicos y otras tecnologías."
+        elseif string.find(q, "hola") or string.find(q, "saludos") or string.find(q, "buenas") then
+            return "¡Hola! Soy ALE AI, tu asistente inteligente universal. Estoy programada para responderte de forma completa sobre cualquier tema de ciencia, historia, tecnología, cultura o entretenimiento. ¿Qué te gustaría consultar hoy?"
+        elseif string.find(q, "tu nombre") or string.find(q, "quien eres") then
+            return "Soy ALE AI, una inteligencia artificial avanzada diseñada para ayudarte, analizar cualquier clase de información y conversar sobre cualquier tema de interés dentro de este script de Roblox."
+        elseif string.find(q, "roblox") then
+            return "Roblox es una plataforma de experiencias en línea y un sistema de creación de juegos donde los usuarios pueden programar y jugar mundos virtuales creados por otros."
+        elseif string.find(q, "capital de mexico") or string.find(q, "capital de méxico") then
+            return "La capital de México es la Ciudad de México (CDMX), una de las metrópolis más grandes, culturales e importantes del mundo."
+        elseif string.find(q, "cielo") and string.find(q, "azul") then
+            return "El cielo se ve azul debido a un fenómeno llamado dispersión de Rayleigh. La luz del Sol llega a la atmósfera y las moléculas de aire dispersan la luz azul en todas direcciones más que los otros colores."
+        elseif string.find(q, "perro") or string.find(q, "perros") then
+            return "Los perros son mamíferos domésticos de la familia de los cánidos, conocidos popularmente como 'el mejor amigo del hombre' por su lealtad, inteligencia y compañía."
+        elseif string.find(q, "gato") or string.find(q, "gatos") then
+            return "Los gatos son pequeños mamíferos carnívoros domesticados, muy valorados por su agilidad, independencia y naturaleza cazadora."
+        elseif string.find(q, "javascript") or string.find(q, "lua") or string.find(q, "programar") then
+            return "La programación es el proceso de diseñar y construir un conjunto de instrucciones escritas (código) para que una computadora realice tareas específicas, ¡exactamente como los scripts de Roblox en Lua!"
+        elseif string.find(q, "amor") then
+            return "El amor es un conjunto de sentimientos y actitudes relacionados con el afecto, la unión y el cuidado profundo hacia otras personas, familiares o seres vivos."
+        elseif string.find(q, "universo") or string.find(q, "espacio") or string.find(q, "estrellas") then
+            return "El universo es la totalidad de todo lo que existe: espacio, tiempo, materia, energía, planetas, galaxias y leyes físicas. Su origen se explica generalmente a través de la teoría del Big Bang."
+        elseif string.find(q, "historia") or string.find(q, "guerra") then
+            return "La historia es la disciplina que estudia los acontecimientos del pasado protagonizados por la humanidad, permitiéndonos comprender nuestro presente y evolución cultural."
+        elseif string.find(q, "musica") or string.find(q, "cancion") then
+            return "La música es el arte de organizar de manera sensible y coherente una combinación de sonidos y silencios utilizando los principios fundamentales de la melodía, la armonía y el ritmo."
+        elseif string.find(q, "deporte") or string.find(q, "futbol") then
+            return "El deporte abarca todas aquellas actividades físicas que involucran reglas competitivas, destreza y entrenamiento corporal, siendo el fútbol uno de los más practicados a nivel global."
+        else
+            return "Respecto à '" .. question .. "', es un tema sumamente amplio e interesante. Analizándolo desde un enfoque general, abarca conceptos profundos relacionados con la ciencia, el análisis crítico o el conocimiento humano. Cada aspecto de esta cuestión ofrece múltiples perspectivas dignas de estudio y debate detallado."
+        end
+    end
+
+    local function createAI()
+        if AIGui then AIGui:Destroy() end
+
+        AIGui = Instance.new("ScreenGui")
+        AIGui.Name = "AleHubAI"
+        AIGui.IgnoreGuiInset = true
+        AIGui.Parent = CoreGui
+
+        local MainFrame = Instance.new("Frame")
+        MainFrame.Size = UDim2.new(0, 340, 0, 420)
+        MainFrame.Position = UDim2.new(0.5, -170, 0.5, -210)
+        MainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 35)
+        MainFrame.BorderSizePixel = 0
+        MainFrame.Active = true
+        MainFrame.Draggable = true
+        MainFrame.Parent = AIGui
+
+        local UICorner = Instance.new("UICorner")
+        UICorner.CornerRadius = UDim.new(0, 8)
+        UICorner.Parent = MainFrame
+
+        local TopBar = Instance.new("Frame")
+        TopBar.Size = UDim2.new(1, 0, 0, 35)
+        TopBar.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
+        TopBar.BorderSizePixel = 0
+        TopBar.Parent = MainFrame
+
+        local TopCorner = Instance.new("UICorner")
+        TopCorner.CornerRadius = UDim.new(0, 8)
+        TopCorner.Parent = TopBar
+
+        local TitleLabel = Instance.new("TextLabel")
+        TitleLabel.Size = UDim2.new(1, -40, 1, 0)
+        TitleLabel.Position = UDim2.new(0, 10, 0, 0)
+        TitleLabel.BackgroundTransparency = 1
+        TitleLabel.Text = "ALE HUB - Inteligencia Artificial"
+        TitleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+        TitleLabel.TextSize = 14
+        TitleLabel.Font = Enum.Font.GothamBold
+        TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
+        TitleLabel.Parent = TopBar
+
+        local CloseButton = Instance.new("TextButton")
+        CloseButton.Size = UDim2.new(0, 35, 0, 35)
+        CloseButton.Position = UDim2.new(1, -35, 0, 0)
+        CloseButton.BackgroundTransparency = 1
+        CloseButton.Text = "X"
+        CloseButton.TextColor3 = Color3.fromRGB(255, 80, 80)
+        CloseButton.TextSize = 16
+        CloseButton.Font = Enum.Font.GothamBold
+        CloseButton.Parent = TopBar
+
+        CloseButton.MouseButton1Click:Connect(function()
+            closeAI()
+        end)
+
+        local ChatDisplay = Instance.new("TextBox")
+        ChatDisplay.Size = UDim2.new(1, -20, 0, 140)
+        ChatDisplay.Position = UDim2.new(0, 10, 0, 45)
+        ChatDisplay.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+        ChatDisplay.TextColor3 = Color3.fromRGB(150, 255, 150)
+        ChatDisplay.TextSize = 13
+        ChatDisplay.Font = Enum.Font.Gotham
+        ChatDisplay.TextXAlignment = Enum.TextXAlignment.Left
+        ChatDisplay.TextYAlignment = Enum.TextYAlignment.Top
+        ChatDisplay.MultiLine = true
+        ChatDisplay.TextWrapped = true
+        ChatDisplay.ClearTextOnFocus = false
+        ChatDisplay.TextEditable = false
+        ChatDisplay.Text = "IA: ¡Hola! Pregúntame sobre cualquier tema con el teclado táctil."
+        ChatDisplay.Parent = MainFrame
+
+        local ChatCorner = Instance.new("UICorner")
+        ChatCorner.CornerRadius = UDim.new(0, 6)
+        ChatCorner.Parent = ChatDisplay
+
+        local InputBox = Instance.new("TextBox")
+        InputBox.Size = UDim2.new(1, -20, 0, 35)
+        InputBox.Position = UDim2.new(0, 10, 0, 195)
+        InputBox.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
+        InputBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+        InputBox.TextSize = 13
+        InputBox.Font = Enum.Font.Gotham
+        InputBox.PlaceholderText = "Escribe tu pregunta aquí..."
+        InputBox.Text = ""
+        InputBox.TextWrapped = true
+        InputBox.ClearTextOnFocus = false
+        InputBox.Parent = MainFrame
+
+        local InputCorner = Instance.new("UICorner")
+        InputCorner.CornerRadius = UDim.new(0, 6)
+        InputCorner.Parent = InputBox
+
+        local KeyboardGrid = Instance.new("Frame")
+        KeyboardGrid.Size = UDim2.new(1, -20, 0, 160)
+        KeyboardGrid.Position = UDim2.new(0, 10, 0, 240)
+        KeyboardGrid.BackgroundTransparency = 1
+        KeyboardGrid.Parent = MainFrame
+
+        local GridLayout = Instance.new("UIGridLayout")
+        GridLayout.CellSize = UDim2.new(0, 29, 0, 34)
+        GridLayout.CellPadding = UDim2.new(0, 3, 0, 4)
+        GridLayout.Parent = KeyboardGrid
+
+        local keysData = {
+            "Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P",
+            "A", "S", "D", "F", "G", "H", "J", "K", "L", "⌫",
+            "Z", "X", "C", "V", "B", "N", "M", " ", "?", "Enviar"
+        }
+
+        for _, keyText in ipairs(keysData) do
+            local Btn = Instance.new("TextButton")
+            Btn.Size = UDim2.new(0, 0, 0, 0)
+            Btn.BackgroundColor3 = Color3.fromRGB(45, 45, 52)
+            Btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+            Btn.TextSize = (keyText == "Enviar" or keyText == "⌫") and 11 or 14
+            Btn.Font = Enum.Font.GothamBold
+            Btn.Text = keyText
+            Btn.Parent = KeyboardGrid
+
+            local BtnCorner = Instance.new("UICorner")
+            BtnCorner.CornerRadius = UDim.new(0, 5)
+            BtnCorner.Parent = Btn
+
+            Btn.MouseButton1Click:Connect(function()
+                playSound("6895079853")
+
+                if keyText == "⌫" then
+                    if #InputBox.Text > 0 then
+                        InputBox.Text = string.sub(InputBox.Text, 1, #InputBox.Text - 1)
+                    end
+                elseif keyText == "Enviar" then
+                    local userMsg = InputBox.Text
+                    if userMsg ~= "" then
+                        local aiReply = getAIResponse(userMsg)
+                        
+                        if string.sub(aiReply, 1, 11) == "[COLOR_RED]" then
+                            ChatDisplay.TextColor3 = Color3.fromRGB(255, 80, 80)
+                            aiReply = string.sub(aiReply, 12)
+                        else
+                            ChatDisplay.TextColor3 = Color3.fromRGB(150, 255, 150)
+                        end
+                        
+                        ChatDisplay.Text = "Tú: " .. userMsg .. "\n\nIA: " .. aiReply
+                        InputBox.Text = ""
+                    end
+                elseif keyText == " " then
+                    InputBox.Text = InputBox.Text .. " "
+                else
+                    InputBox.Text = InputBox.Text .. keyText
+                end
+            end)
+        end
+    end
+
+    CalcTab:Button({
+        Title = "Abrir Calculadora",
+        Description = "Abre una calculadora flotante y arrastrable en pantalla.",
+        Callback = function()
+            createCalculator()
+        end,
+    })
+
+    CalcTab:Button({
+        Title = "Cerrar Calculadora",
+        Description = "Cierra la calculadora flotante si está abierta.",
+        Callback = function()
+            if CalcGui then
+                closeCalculator()
+            end
+        end,
+    })
+
+    CalcTab:Button({
+        Title = "Abrir IA",
+        Description = "Abre una ventana de Inteligencia Artificial con teclado táctil.",
+        Callback = function()
+            createAI()
+        end,
+    })
+
+    CalcTab:Button({
+        Title = "Cerrar IA",
+        Description = "Cierra la ventana de la Inteligencia Artificial.",
+        Callback = function()
+            if AIGui then
+                closeAI()
+            end
+        end,
+    })
+
+    local function refreshAllLists()
+        local newList = getUpdatedPlayerList()
+        
+        pcall(function()
+            teleportDropdown:Values(newList)
+            spectateDropdown:Values(newList)
+            followDropdown:Values(newList)
+        end)
+        
+        if selectedPlayerName and not Players:FindFirstChild(selectedPlayerName) then
+            selectedPlayerName = nil
+        end
+        if spectatePlayerName and not Players:FindFirstChild(spectatePlayerName) then
+            spectatePlayerName = nil
+        end
+        if followPlayerName and not Players:FindFirstChild(followPlayerName) then
+            followPlayerName = nil
+            FollowEnabled = false
+        end
+    end
+
+    Players.PlayerAdded:Connect(refreshAllLists)
+    Players.PlayerRemoving:Connect(refreshAllLists)
+
+    task.spawn(function()
+        repeat task.wait() until introFinished
+        WindUI:Notify({
+            Title = "Cargado",
+            Content = "¡Bienvenido a ALE HUB!",
+            Duration = 4,
+        })
+    end)
+end
